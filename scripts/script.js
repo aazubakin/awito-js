@@ -1,16 +1,17 @@
 'use strict';
 
+const dataBase = [];
+
 const modalAdd = document.querySelector('.modal__add'),
    addAd = document.querySelector('.add__ad'),
    modalBtnSubmit = document.querySelector('.modal__btn-submit'),
    modalSubmit = document.querySelector('.modal__submit'),
    catalog = document.querySelector('.catalog'),
-   modalItem = document.querySelector('.modal__item');
+   modalItem = document.querySelector('.modal__item'),
+   modalBtnWarning = document.querySelector('.modal__btn-warning');
 
-const elementsModalSubmit = modalSubmit.elements;
-console.log([...elementsModalSubmit].filter((elem) => {
-   return elem.tagName !== 'BUTTON';
-}));
+const elementsModalSubmit = [...modalSubmit.elements]
+   .filter(elem => elem.tagName !== 'BUTTON' && elem.type !== 'submit'); // получаем все элементы формы кроме submit
 
 const closeModal = function (event) {
    const target = event.target;
@@ -31,6 +32,24 @@ const closeModalEsc = (event) => {
       document.removeEventListener('keydown', closeModalEsc); //Закрытие по клавише Escape
    };
 };
+
+modalSubmit.addEventListener('input', () => {
+   const validForm = elementsModalSubmit.every(elem => elem.vlaue);
+   console.log(validForm);
+   modalBtnSubmit.disabled = !validForm;
+   modalBtnWarning.getElementsByClassName.display = validForm ? 'none' : '';
+}); // после заполнения полей активируется кнопака отправить и исчезает предупреждающая надпись
+
+modalSubmit.addEventListener('submit', event => {
+   event.preventDefault(); // после отправки формы страница не перезагружается
+   const itemObj = {};
+   for (const elem of elementsModalSubmit) {
+      itemObj[elem.name] = elem.value;
+   }
+
+   dataBase.push(itemObj);
+   modalSubmit.reset();
+}); // добавляем отправку данных формы в массив
 
 addAd.addEventListener('click', () => {
    modalAdd.classList.remove('hide'); //открытие модального окна 

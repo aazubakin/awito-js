@@ -15,22 +15,15 @@ const elementsModalSubmit = [...modalSubmit.elements]
 
 const closeModal = function (event) {
    const target = event.target;
-
-   if (target.closest('.modal__close') || target === this) {
-      this.classList.add('hide'); //закрытие при клике вне модального окна
-      if (this === modalAdd) {
+   const key = event.code;
+   if (target.closest('.modal__close') || target === this || key === 'Escape') {
+      modalItem.classList.add('hide');
+      modalAdd.classList.add('hide');//закрытие при клике вне модального окна
+      if (modalAdd) {
          modalSubmit.reset(); //очищение полей формы при закрытии
+         document.removeEventListener('keydown', closeModalEsc); //Закрытие по клавише Escape
       }
    }
-};
-const closeModalEsc = (event) => {
-   const keyName = event.key;
-   if (keyName === 'Escape') {
-      modalItem.classList.add('hide');
-      modalAdd.classList.add('hide');
-      modalSubmit.reset(); //очищение полей формы при закрытии
-      document.removeEventListener('keydown', closeModalEsc); //Закрытие по клавише Escape
-   };
 };
 
 modalSubmit.addEventListener('input', () => {
@@ -54,7 +47,7 @@ modalSubmit.addEventListener('submit', event => {
 addAd.addEventListener('click', () => {
    modalAdd.classList.remove('hide'); //открытие модального окна 
    modalBtnSubmit.disabled = true; // отключение кнопки при пустых полях
-   document.addEventListener('keydown', closeModalEsc); //Закрытие по клавише Escape
+   document.addEventListener('keydown', closeModal); //Закрытие по клавише Escape
 });
 
 catalog.addEventListener('click', event => {
@@ -62,7 +55,7 @@ catalog.addEventListener('click', event => {
 
    if (target.closest('.card')) { //  определяем делигирование
       modalItem.classList.remove('hide'); // открытие при клике на карточку
-      document.addEventListener('keydown', closeModalEsc); //Закрытие по клавише Escape
+      document.addEventListener('keydown', closeModal); //Закрытие по клавише Escape
    };
 });
 

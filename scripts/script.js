@@ -49,7 +49,21 @@ const closeModal = event => {
    }
 };
 
+const renderCard = () => {
+   catalog.textContent = '';
 
+   dataBase.forEach((item, i) => {
+      catalog.insertAdjacentHTML('beforeend', `
+         <li class="card">
+            <img class="card__image" src="img/temp.jpg" alt="test">
+            <div class="card__description">
+               <h3 class="card__header">Тестовая карточка</h3>
+               <div class="card__price">4000 ₽</div>
+            </div>
+         </li>
+      `)
+   });
+};
 
 modalFileInput.addEventListener('change', event => {
    const target = event.target;
@@ -70,6 +84,8 @@ modalFileInput.addEventListener('change', event => {
          modalImageAdd.src = `data:image/jpeg;base64,${infoPhoto.base64}`;
       } else {
          modalFileBtn.textContent('Файл не должен превышать 200 kB');
+         modalFileInput.value = '';
+         checkForm();
       }
    });
 });
@@ -88,6 +104,7 @@ modalSubmit.addEventListener('submit', event => {
    modalSubmit.reset();
    closeModal({ target: modalAdd });
    localDB();
+   renderCard();
 }); // добавляем отправку данных формы в массив
 
 addAd.addEventListener('click', () => {
@@ -107,3 +124,5 @@ catalog.addEventListener('click', event => {
 
 modalAdd.addEventListener('click', closeModal);
 modalItem.addEventListener('click', closeModal);
+
+renderCard();

@@ -13,8 +13,17 @@ const modalAdd = document.querySelector('.modal__add'),
    modalFileBtn = document.querySelector('.modal__file-btn'),
    modalImageAdd = document.querySelector('.modal__image-add');
 
+const modalImageItem = document.querySelector('.modal__image-item'),
+   modalHeaderItem = document.querySelector('.modal__header-item'),
+   modalStatusItem = document.querySelector('.modal__status-item'),
+   modalCostItem = document.querySelector('.modal__cost-item'),
+   modalDesriptionItem = document.querySelector('.modal__description-item');
+
+
+
 const textFileBtn = modalFileBtn.textContent;
 const srcModalImage = modalImageAdd.src;
+
 
 const elementsModalSubmit = [...modalSubmit.elements]
    .filter(elem => elem.tagName !== 'BUTTON'); // получаем все элементы формы кроме submit
@@ -42,23 +51,25 @@ const closeModal = event => {
       if (modalAdd) {
          modalSubmit.reset(); //очищение полей формы при закрытии
          document.removeEventListener('keydown', closeModal); //После закрытия отключить прослушку
+         modalImageAdd.src = srcModalImage;
+         modalFileBtn.textContent = textFileBtn;
          checkForm();
+         modalItem.textContent = '';
       }
-      modalImageAdd.src = srcModalImage;
-      modalFileBtn.textContent = textFileBtn;
+
    }
 };
 
-const renderCard = () => {
+const renderCard = () => { //добавление карточек
    catalog.textContent = '';
 
    dataBase.forEach((item, i) => {
       catalog.insertAdjacentHTML('beforeend', `
-         <li class="card">
-            <img class="card__image" src="img/temp.jpg" alt="test">
+         <li class="card data-id=${i}">
+            <img class="card__image" src="data:image/jpeg;base64,${infoPhoto.base64}" alt="image">
             <div class="card__description">
-               <h3 class="card__header">Тестовая карточка</h3>
-               <div class="card__price">4000 ₽</div>
+               <h3 class="card__header">${item.nameItem}</h3>
+               <div class="card__price">${item.costItem}</div>
             </div>
          </li>
       `)
@@ -83,8 +94,9 @@ modalFileInput.addEventListener('change', event => {
          infoPhoto.base64 = btoa(event.target.result);
          modalImageAdd.src = `data:image/jpeg;base64,${infoPhoto.base64}`;
       } else {
-         modalFileBtn.textContent('Файл не должен превышать 200 kB');
+         modalFileBtn.textContent = 'Файл не должен превышать 200 kB';
          modalFileInput.value = '';
+         modalImageAdd.src = srcModalImage;
          checkForm();
       }
    });
@@ -105,6 +117,7 @@ modalSubmit.addEventListener('submit', event => {
    closeModal({ target: modalAdd });
    localDB();
    renderCard();
+
 }); // добавляем отправку данных формы в массив
 
 addAd.addEventListener('click', () => {
@@ -115,8 +128,17 @@ addAd.addEventListener('click', () => {
 
 catalog.addEventListener('click', event => {
    const target = event.target;
+   const card = target.closest('.card');
 
-   if (target.closest('.card')) { //  определяем делигирование
+   if (card) {
+      // const item = dataBase[card.dataset.id];
+
+      /*modalImageItem.src = `data: image/jpeg;base64,${item.image}`;
+       modalHeaderItem.textContent =
+          modalStatusItem =
+          modalCostItem =
+          modalDesriptionItem =
+ */
       modalItem.classList.remove('hide'); // открытие при клике на карточку
       document.addEventListener('keydown', closeModal); //Закрытие по клавише Escape
    };
